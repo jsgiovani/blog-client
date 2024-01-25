@@ -5,10 +5,12 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Projects from "./pages/projects/Projects";
+import Header from "./components/Header";
 
 export default function App() {
   return (
     <BrowserRouter>
+    <Header/>
     <Routes>
         <Route
             path = "/"
