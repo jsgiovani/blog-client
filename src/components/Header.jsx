@@ -44,14 +44,15 @@ const Header = () => {
                 <FaMoon />
             </Button>
 
-            <Link to="/sign-in">
+            <Link to="/register">
 
                 <Button
-                    className='hidden md:inline'
+                    outline
+                    className='hidden md:inline overflow-hidden'
                     gradientDuoTone={'purpleToBlue'}
                     color='gray'
                 >
-                    Login
+                    Register
                 </Button>
 
             </Link>

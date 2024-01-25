@@ -2,7 +2,7 @@ import { Button, Label, TextInput } from 'flowbite-react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const Login = () => {
+const Register = () => {
   return (
     <main className='min-h-screen mt-20'>
 
@@ -19,6 +19,19 @@ const Login = () => {
             <div>
                 <form className='space-y-4'>
 
+                    <div>
+                        <Label 
+                            value='Your Username'
+                            htmlFor='username'
+
+                        />
+                        
+                        <TextInput
+                            type='text'
+                            placeholder='Username'
+                            id='username'
+                        />
+                    </div>
 
                     <div>
                         <Label 
@@ -60,8 +73,8 @@ const Login = () => {
                 </form>
 
                 <div className='flex items-center gap-1 text-sm mt-4'>
-                    <span>Do not have an account?</span>
-                    <Link className='text-blue-500' to="/register">Register</Link>
+                    <span>Have an account?</span>
+                    <Link className='text-blue-500' to="/login">Login</Link>
 
                 </div>
 
@@ -75,4 +88,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register
