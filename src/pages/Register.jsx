@@ -1,8 +1,63 @@
-import { Button, Label, TextInput } from 'flowbite-react'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axiosConnection from '../config/axios';
 
 const Register = () => {
+
+    const navegate = useNavigate();
+
+    const [user, setUser] = useState({
+        username:'',
+        email:'',
+        password:''
+    });
+
+
+    const [alert, setAlert] = useState({status:false});
+    const [loading, setLoading] = useState(false);
+
+
+
+
+    const handleChange = (e)=>{
+        setUser({...user, [e.target.id]:e.target.value.trim()});
+    };
+
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+
+
+        if (Object.values(user).includes('')) {
+            return setAlert({message:'All fields are required', status:true});
+        }
+
+
+        try {
+            setLoading(true);
+            setAlert({status:false});
+            const {data} = await axiosConnection.post('/api/auth/register', user);
+
+            if (data.success ===false) {
+                setAlert({message:data.message, status:true});
+                return setLoading(false);
+            }
+
+            setLoading(false);
+            navegate('/login');
+
+
+        } catch (error) {
+            setAlert({message:error.response.data.message, status:true});
+            setLoading(false);
+        }
+
+
+
+    };
+
+
   return (
     <main className='min-h-screen mt-20'>
 
@@ -17,7 +72,10 @@ const Register = () => {
             </div>
 
             <div>
-                <form className='space-y-4'>
+
+       
+            
+                <form className='space-y-4' onSubmit={handleSubmit}>
 
                     <div>
                         <Label 
@@ -30,6 +88,7 @@ const Register = () => {
                             type='text'
                             placeholder='Username'
                             id='username'
+                            onChange={handleChange}
                         />
                     </div>
 
@@ -38,12 +97,14 @@ const Register = () => {
                             value='Your email'
                             htmlFor='email'
 
+
                         />
                         
                         <TextInput
                             type='email'
                             placeholder='Your email'
                             id='email'
+                            onChange={handleChange}
                         />
                     </div>
 
@@ -58,6 +119,7 @@ const Register = () => {
                             type='password'
                             placeholder='Password'
                             id='password'
+                            onChange={handleChange}
                         />
                     </div>
 
@@ -65,8 +127,10 @@ const Register = () => {
                         gradientDuoTone={'purpleToPink'}
                         type='submit'
                         className='w-full'
+                        disabled = {loading}
+
                     >
-                        Register
+                        {loading ? <Spinner size={'sm'}  />:'Register'}
                     </Button>
 
 
@@ -77,6 +141,11 @@ const Register = () => {
                     <Link className='text-blue-500' to="/login">Login</Link>
 
                 </div>
+
+
+                {alert.status && (
+                    <Alert className='mt-4' color={'failure'}>{alert.message}</Alert>
+                )}
 
 
             </div>
