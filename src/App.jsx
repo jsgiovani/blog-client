@@ -7,44 +7,46 @@ import Logout from "./pages/Logout";
 import Projects from "./pages/projects/Projects";
 import Header from "./components/Header";
 import Register from "./pages/Register";
+import Footer from "./components/Footer";
 
 export default function App() {
   return (
     <BrowserRouter>
-    <Header/>
-    <Routes>
-        <Route
-            path = "/"
-            element = {<Home/>}
-        />
-        <Route
-            path = "/about"
-            element = {<About/>}
-        />
-        <Route
-            path = "/dashboard"
-            element = {<Dashboard/>}
-        />
-        <Route
-            path = "/login"
-            element = {<Login/>}
-        />
-        <Route
-            path = "/register"
-            element = {<Register/>}
-        />
+        <Header/>
+        <Routes>
+            <Route
+                path = "/"
+                element = {<Home/>}
+            />
+            <Route
+                path = "/about"
+                element = {<About/>}
+            />
+            <Route
+                path = "/dashboard"
+                element = {<Dashboard/>}
+            />
+            <Route
+                path = "/login"
+                element = {<Login/>}
+            />
+            <Route
+                path = "/register"
+                element = {<Register/>}
+            />
 
-        <Route
-            path = "/logout"
-            element = {<Logout/>}
-        />
+            <Route
+                path = "/logout"
+                element = {<Logout/>}
+            />
 
-        <Route
-            path = "/projects"
-            element = {<Projects/>}
-        />
+            <Route
+                path = "/projects"
+                element = {<Projects/>}
+            />
 
-    </Routes>
+        </Routes>
+        <Footer/>
     </BrowserRouter>
   )
 }
