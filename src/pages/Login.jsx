@@ -1,9 +1,16 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axiosConnection from '../config/axios';
+import { useSelector, useDispatch } from 'react-redux'
+import { loginFailure, loginStart, loginSuccess } from '../features/user/userSlice';
 
 const Login = () => {
+
+    const {error, loading} = useSelector((state) => state.user);
+
+    const dispatch = useDispatch()
+
 
     const navegate = useNavigate();
 
@@ -11,12 +18,6 @@ const Login = () => {
         email:'',
         password:''
     });
-
-
-    const [alert, setAlert] = useState({status:false});
-    const [loading, setLoading] = useState(false);
-
-
 
 
     const handleChange = (e)=>{
@@ -29,27 +30,25 @@ const Login = () => {
 
 
         if (Object.values(user).includes('')) {
-            return setAlert({message:'All fields are required', status:true});
+            return  dispatch(loginFailure({message:'All fields are required', status:true}));
         }
 
 
         try {
-            setLoading(true);
-            setAlert({status:false});
+            dispatch(loginStart());
+        
             const {data} = await axiosConnection.post('/api/auth/login', user);
 
             if (data.success ===false) {
-                setAlert({message:data.message, status:true});
-                return setLoading(false);
+                dispatch(loginFailure({status:true, message:error.response.data.message}))
             }
 
-            setLoading(false);
+            dispatch(loginSuccess(data.data));
             navegate('/');
 
 
         } catch (error) {
-            setAlert({message:error.response.data.message, status:true});
-            setLoading(false);
+            dispatch(loginFailure({status:true, message:error.response.data.message}))
         }
 
 
@@ -128,8 +127,8 @@ const Login = () => {
                 </div>
 
 
-                {alert.status && (
-                    <Alert className='mt-4' color={'failure'}>{alert.message}</Alert>
+                {error && error.status && (
+                    <Alert className='mt-4' color={'failure'}>{error.message}</Alert>
                 )}
 
 
