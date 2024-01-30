@@ -8,6 +8,7 @@ import Projects from "./pages/projects/Projects";
 import Header from "./components/Header";
 import Register from "./pages/Register";
 import Footer from "./components/Footer";
+import PrivateRoutes from "./components/PrivateRoutes";
 
 export default function App() {
   return (
@@ -22,10 +23,17 @@ export default function App() {
                 path = "/about"
                 element = {<About/>}
             />
-            <Route
-                path = "/dashboard"
-                element = {<Dashboard/>}
-            />
+
+            {/* protected routes */}
+
+            <Route element= {<PrivateRoutes/>}>
+                <Route
+                    path = "/dashboard"
+                    element = {<Dashboard/>}
+                />
+            </Route>
+
+
             <Route
                 path = "/login"
                 element = {<Login/>}
