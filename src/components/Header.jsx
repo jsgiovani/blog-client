@@ -1,14 +1,17 @@
 import { Avatar, Button, Dropdown, DropdownDivider, DropdownItem, Navbar, TextInput } from 'flowbite-react';
 
 import { IoIosSearch } from "react-icons/io";
+import { IoMdSunny } from "react-icons/io";
 import { FaMoon } from "react-icons/fa";
 import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTheme } from '../features/theme/themeSlice';
 const Header = () => {
 
     const {pathname} = useLocation();
     const { currentUser} = useSelector((state) => state.user);
-    console.log(currentUser);
+    const  {dark}  = useSelector((state) => state.theme);
+    const dispatch = useDispatch();
 
   return (
 
@@ -43,8 +46,9 @@ const Header = () => {
                 className='w-12 h-10  hidden md:inline'
                 color='gray'
                 pill
+                onClick={()=>dispatch(toggleTheme())}
             >
-                <FaMoon />
+                {!dark ? <FaMoon/> :<IoMdSunny /> }
             </Button>
 
             {currentUser && currentUser.email ? (
