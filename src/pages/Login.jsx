@@ -4,14 +4,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import axiosConnection from '../config/axios';
 import { useSelector, useDispatch } from 'react-redux'
 import { loginFailure, loginStart, loginSuccess } from '../features/user/userSlice';
+import OAuth from '../components/OAuth';
 
 const Login = () => {
 
     const {error, loading} = useSelector((state) => state.user);
-
     const dispatch = useDispatch()
-
-
     const navegate = useNavigate();
 
     const [user, setUser] = useState({
@@ -116,6 +114,8 @@ const Login = () => {
                     >
                         {loading ? <Spinner size={'sm'}  />:'Login'}
                     </Button>
+
+                    <OAuth/>
 
 
                 </form>
