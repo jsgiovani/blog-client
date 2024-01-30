@@ -1,11 +1,14 @@
-import { Button, Navbar, TextInput } from 'flowbite-react';
+import { Avatar, Button, Dropdown, DropdownDivider, DropdownItem, Navbar, TextInput } from 'flowbite-react';
 
 import { IoIosSearch } from "react-icons/io";
 import { FaMoon } from "react-icons/fa";
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const Header = () => {
 
     const {pathname} = useLocation();
+    const { currentUser} = useSelector((state) => state.user);
+    console.log(currentUser);
 
   return (
 
@@ -44,20 +47,54 @@ const Header = () => {
                 <FaMoon />
             </Button>
 
-            <Link to="/register">
-
-                <Button
-                    outline
-                    className='hidden md:inline overflow-hidden'
-                    gradientDuoTone={'purpleToBlue'}
-                    color='gray'
+            {currentUser && currentUser.email ? (
+                <Dropdown
+                    arrowIcon = {false}
+                    inline
+                    label = {
+                        <Avatar
+                            alt='User'
+                            img={currentUser.photo}
+                            rounded
+                        />
+                    }
                 >
-                    Register
-                </Button>
 
-            </Link>
+                    <Dropdown.Header>
+                        <span className='block text-sm'>@{currentUser.username}</span>
+                        <span className='block text-sm font-semibold truncate'>{currentUser.email}</span>
+                    </Dropdown.Header>
 
-            <Navbar.Toggle/>
+                    <Link to={'/dashboard?tab=profile'}>
+                        <DropdownItem>Profile</DropdownItem>
+                    </Link>
+
+                    <DropdownDivider/>
+
+                    <Link to={'/logout'}>
+                        <DropdownItem>Logout</DropdownItem>
+                    </Link>
+
+                </Dropdown>
+                ):(
+                <Link to="/register">
+                
+    
+                    <Button
+                        outline
+                        className='hidden md:inline overflow-hidden'
+                        gradientDuoTone={'purpleToBlue'}
+                        color='gray'
+                    >
+                        Register
+                    </Button>
+    
+                </Link>
+                    
+                )}
+    
+                <Navbar.Toggle/>
+
         </div>
 
         <Navbar.Collapse>
