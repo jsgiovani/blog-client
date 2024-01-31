@@ -31,7 +31,8 @@ const DashSidebar = () => {
                 <Sidebar.Item 
                     active =  {tab ==='profile' ? true:false}
                     labelColor = {'dark'}
-                    label = {'user'} 
+                    label = {'user'}
+                    as='div' 
                     icon={HiUser}>
                     Dashboard
                 </Sidebar.Item>
@@ -41,6 +42,7 @@ const DashSidebar = () => {
             <Link to="/logout">
                 <Sidebar.Item 
                     labelColor = {'dark'}
+                    as='div' 
                     icon={RiLogoutCircleRLine}>
                     Logout
                 </Sidebar.Item>
