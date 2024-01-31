@@ -1,22 +1,31 @@
 import { Alert, Button, Label, TextInput } from "flowbite-react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import app from "../../firebase";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import axiosConnection from "../../config/axios";
+import { updateFailure, updateStart, updateSucces } from "../../features/user/userSlice";
 
 
 const Profile = () => {
 
-    const { currentUser } = useSelector((state) => state.user);
+
+
+    const { currentUser, error } = useSelector((state) => state.user);
     const [loading, setLoading] = useState(false);
+
+    const distpatch = useDispatch();
+
 
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUrl, setImageFileUrl] = useState(null);
     const [uploadPorcentage, setUploadPorcentage] = useState(null);
     const imageRef = useRef();
-    const [error, setError] = useState(null); //image upload error
+
+    const [formData, setFormData] = useState({});
+
 
 
 
@@ -44,6 +53,7 @@ const Profile = () => {
             ()=>{
                 getDownloadURL(uploadFile.snapshot.ref).then((downloadURL) =>{
                     setImageFileUrl(downloadURL);
+                    setFormData({...formData, photo:downloadURL});
                     setError(null);
                 })
             }
@@ -52,11 +62,35 @@ const Profile = () => {
     }
 
 
-    const handleChange = ()=>{
-
+    const handleChange = (e)=>{
+        setFormData({...formData, [e.target.id]:e.target.value})
     }
 
-    const handleSubmit = ()=>{
+
+    const handleSubmit = async(e)=>{
+        e.preventDefault();
+
+        try {
+            distpatch(updateStart());
+            const {data} = await axiosConnection.put(`/api/users/${currentUser._id}`, formData, {
+                headers:{
+                    'authorization': `Bearer ${currentUser.token}`,
+                },
+            });
+
+
+            if (!data.success) {
+                distpatch(updateFailure({status:true, message:error.response.data.message}))
+            }
+
+
+            distpatch(updateSucces({...data.data, token:currentUser.token}));
+        } catch (error) {
+           distpatch(updateFailure({status:true, message:error.response.data.message}))
+        }
+
+
+
 
     }
 
@@ -76,7 +110,6 @@ const Profile = () => {
     }, [imageFile])
 
 
-
   return (
     <div className='p-3 max-w-lg mx-auto w-full'>
         <h1 className="text-center my-10">Profile</h1>
@@ -90,7 +123,7 @@ const Profile = () => {
                 <div className="w-24 h-24 flex justify-center shadow mb-5 overflow-hidden rounded-full relative" onClick={()=>imageRef.current.click()}>
                     {uploadPorcentage && (
                         <CircularProgressbar 
-                            value={uploadPorcentage} 
+                            defaultValue={uploadPorcentage} 
                             text={`${uploadPorcentage}%`}
                             styles={
                                 {
@@ -112,8 +145,8 @@ const Profile = () => {
                 </div>
             </div>
 
-            {error && (
-                <Alert className='my-2 text-center w-full font-medium' color={'failure'}>{error}</Alert>
+            { error && error.status && (
+                <Alert className='my-2 text-center w-full font-medium' color={'failure'}>{error.message}</Alert>
             )}
 
             <div className="space-y-4">
@@ -129,7 +162,7 @@ const Profile = () => {
                         placeholder='Username'
                         id='username'
                         onChange={handleChange}
-                        value={currentUser.username}
+                        defaultValue={currentUser.username}
                     />
                 </div>
 
@@ -146,7 +179,7 @@ const Profile = () => {
                         placeholder='Your email'
                         id='email'
                         onChange={handleChange}
-                        value={currentUser.email}
+                        defaultValue={currentUser.email}
                     />
                 </div>
 
