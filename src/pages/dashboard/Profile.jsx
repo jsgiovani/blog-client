@@ -1,12 +1,14 @@
-import { Alert, Button, Label, TextInput } from "flowbite-react";
+import { Alert, Button, Label, Modal, TextInput } from "flowbite-react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import app from "../../firebase";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import axiosConnection from "../../config/axios";
-import { updateFailure, updateStart, updateSucces } from "../../features/user/userSlice";
+import { deleteUserFailure, deleteUserStart, deleteUserSuccess, updateFailure, updateStart, updateSucces } from "../../features/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 
 const Profile = () => {
@@ -15,6 +17,8 @@ const Profile = () => {
 
     const { currentUser, error } = useSelector((state) => state.user);
     const [loading, setLoading] = useState(false);
+    const [modal, setModal] = useState(false);
+    const navegate = useNavigate();
 
     const distpatch = useDispatch();
 
@@ -67,6 +71,7 @@ const Profile = () => {
     }
 
 
+    //fn to update user information
     const handleSubmit = async(e)=>{
         e.preventDefault();
 
@@ -100,6 +105,32 @@ const Profile = () => {
         if (file) {
             setImageFileUrl(URL.createObjectURL(file));
         };
+    }
+
+    const removeAccount = async ()=>{
+        setModal(false);
+
+        try {
+            distpatch(deleteUserStart());
+            const {data} = await axiosConnection.delete(`/api/users/${currentUser._id}`, {
+                headers:{
+                    'authorization': `Bearer ${currentUser.token}`,
+                },
+            });
+
+
+            if (!data.success) {
+                distpatch(deleteUserFailure({status:true, message:error.response.data.message}))
+            }
+
+
+            distpatch(deleteUserSuccess());
+            navegate('/login');
+
+        } catch (error) {
+           distpatch(deleteUserFailure({status:true, message:error.response.data.message}))
+        }
+
     }
 
     useEffect(() => {
@@ -214,9 +245,35 @@ const Profile = () => {
         </form>
 
         <div className="flex justify-between my-5 text-red-500">
-            <span>Delete Account</span>
+            <button onClick={()=>setModal(true)}>Delete Account</button>
             <span>Logout</span>
         </div>
+
+        <Modal
+            show = {modal}
+            onClose={()=>setModal(false)}
+            popup
+            size={'md'}
+        >
+            <Modal.Header />
+            <Modal.Body>
+                <div className="text-center">
+                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                    Are you sure you want to delete your account?
+                </h3>
+                <div className="flex justify-center gap-4">
+                    <Button color="failure" onClick={() => removeAccount()}>
+                    {"Yes, I'm sure"}
+                    </Button>
+                    <Button color="gray" onClick={() => setModal(false)}>
+                    No, cancel
+                    </Button>
+                </div>
+                </div>
+            </Modal.Body>
+
+        </Modal>
     </div>
   )
 }
