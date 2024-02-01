@@ -3,15 +3,24 @@ import { Avatar, Button, Dropdown, DropdownDivider, DropdownItem, Navbar, TextIn
 import { IoIosSearch } from "react-icons/io";
 import { IoMdSunny } from "react-icons/io";
 import { FaMoon } from "react-icons/fa";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../features/theme/themeSlice';
+import { userLogout } from '../features/user/userSlice';
 const Header = () => {
 
     const {pathname} = useLocation();
     const { currentUser} = useSelector((state) => state.user);
     const  {dark}  = useSelector((state) => state.theme);
     const dispatch = useDispatch();
+    const navegate = useNavigate();
+
+
+    const logout = ()=>{
+        dispatch(userLogout());
+        navegate('/login');
+    }
+    
 
   return (
 
@@ -75,8 +84,8 @@ const Header = () => {
 
                     <DropdownDivider/>
 
-                    <Link to={'/logout'}>
-                        <DropdownItem>Logout</DropdownItem>
+                    <Link to={'#'}>
+                        <DropdownItem onClick={()=>logout()}>Logout</DropdownItem>
                     </Link>
 
                 </Dropdown>

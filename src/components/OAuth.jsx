@@ -47,7 +47,7 @@ const OAuth = () => {
 
             
             dispatch(loginSuccess(dt.data));
-            navegate('/');
+            navegate('/dashboard?tab=profile');
 
             
         } catch (error) {

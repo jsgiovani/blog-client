@@ -2,14 +2,17 @@ import { Sidebar } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from 'react-icons/hi';
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux"
+import { userLogout } from '../features/user/userSlice';
 
 
 const DashSidebar = () => {
 
     const location = useLocation();
-
+    const distpatch = useDispatch();
     const [tab, setTab] = useState();
+    const navegate = useNavigate();
   
     useEffect(() => {
       const urlParams = new URLSearchParams(location.search);
@@ -19,6 +22,13 @@ const DashSidebar = () => {
       }
   
     }, [location.search])
+
+
+    const logout = ()=>{
+        distpatch(userLogout());
+        navegate('/login');
+    }
+
 
 
   return (
@@ -39,10 +49,12 @@ const DashSidebar = () => {
 
             </Link>
 
-            <Link to="/logout">
-                <Sidebar.Item 
+            <Link to="#" onClick={()=>logout()}>
+                <Sidebar.Item
+                     
                     labelColor = {'dark'}
                     as='div' 
+                
                     icon={RiLogoutCircleRLine}>
                     Logout
                 </Sidebar.Item>

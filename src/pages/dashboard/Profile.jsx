@@ -7,7 +7,7 @@ import app from "../../firebase";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import axiosConnection from "../../config/axios";
-import { deleteUserFailure, deleteUserStart, deleteUserSuccess, updateFailure, updateStart, updateSucces } from "../../features/user/userSlice";
+import { deleteUserFailure, deleteUserStart, deleteUserSuccess, updateFailure, updateStart, updateSucces, userLogout } from "../../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 
 
@@ -133,6 +133,12 @@ const Profile = () => {
 
     }
 
+    const logout = ()=>{
+        distpatch(userLogout());
+        navegate('/login');
+    }
+
+
     useEffect(() => {
         if (imageFile) {
             uploadImage(imageFile)
@@ -246,7 +252,7 @@ const Profile = () => {
 
         <div className="flex justify-between my-5 text-red-500">
             <button onClick={()=>setModal(true)}>Delete Account</button>
-            <span>Logout</span>
+            <button onClick={logout}>Logout</button>
         </div>
 
         <Modal
