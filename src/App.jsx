@@ -9,6 +9,8 @@ import Header from "./components/Header";
 import Register from "./pages/Register";
 import Footer from "./components/Footer";
 import PrivateRoutes from "./components/PrivateRoutes";
+import Create from "./pages/posts/Create";
+import AdminPrivateRoutes from "./components/AdminPrivateRoutes";
 
 export default function App() {
   return (
@@ -34,10 +36,23 @@ export default function App() {
             </Route>
 
 
+            <Route element= {<AdminPrivateRoutes/>}>
+                <Route
+                    path = "/posts/create"
+                    element = {<Create/>}
+                />
+            </Route>
+
+
+
+
             <Route
                 path = "/login"
                 element = {<Login/>}
             />
+
+
+
             <Route
                 path = "/register"
                 element = {<Register/>}

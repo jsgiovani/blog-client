@@ -8,7 +8,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import axiosConnection from "../../config/axios";
 import { deleteUserFailure, deleteUserStart, deleteUserSuccess, updateFailure, updateStart, updateSucces, userLogout } from "../../features/user/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Profile = () => {
@@ -236,7 +236,7 @@ const Profile = () => {
                 </div>
 
                 <Button
-                    gradientDuoTone={'purpleToPink'}
+                    gradientDuoTone={'purpleToBlue'}
                     type='submit'
                     className='w-full'
                     disabled = {loading}
@@ -244,6 +244,26 @@ const Profile = () => {
                 >
                     {loading ? <Spinner size={'sm'}  />:'Update'}
                 </Button>
+
+                {currentUser.isAdmin && (
+
+                    <Link to={'/posts/create'} className="block">
+                    
+                        <Button
+                            gradientDuoTone={'purpleToPink'}
+                            type='button'
+                            className='w-full'
+                            disabled = {loading}
+        
+                        >
+                            Create a Post
+                        </Button>
+                    </Link>
+
+                )}
+
+
+
 
             </div>
 
