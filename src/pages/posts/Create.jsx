@@ -6,11 +6,17 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css'
+import axiosConnection from '../../config/axios';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Create = () => {
 
     const [loading, setLoading] = useState(false);
     const [imageUploadError, setImageUploadError] = useState(null);
+    const [uploadPostError, setUploadPostError] = useState(null);
+    const { currentUser } = useSelector((state) => state.user);
+    const navegate = useNavigate();
 
     const [imageFileUrl, setImageFileUrl] = useState(null)
     const [uploadPorcentage, setUploadPorcentage] = useState(null);
@@ -18,7 +24,41 @@ const Create = () => {
     const [formData, setFormData] = useState({});
     const [file, setFile] = useState(null);
 
-    const handleChange = ()=>{
+    const handleChange = (e)=>{
+        setFormData({
+            ...formData,
+            [e.target.id]:e.target.value
+        });
+    }
+
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+
+        try {
+            setLoading(true);
+            const {data} = await axiosConnection.post(`/api/posts`, formData, {
+                headers:{
+                    'authorization': `Bearer ${currentUser.token}`,
+                },
+            });
+
+            console.log(data);
+
+
+            if (!data.success) {
+                setUploadPostError({status:true, message:error.response.data.message})
+            }
+
+
+            setUploadPostError({status:false, message:null});
+            setLoading(false);
+           navegate(`/posts/${data.data.slug}`)
+            
+        } catch (error) {
+           setUploadPostError({status:true, message:error.response.data.message})
+           setLoading(false);
+        }
 
     }
 
@@ -74,12 +114,12 @@ const Create = () => {
     }, [file])
 
 
-    console.log(file);
+
   return (
     <main className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-center font-bold text-2xl my-7'>Create a new post</h1>
         
-        <form className='space-y-5'>
+        <form className='space-y-5' onSubmit={handleSubmit}>
 
             <div className='flex gap-2 flex-col md:flex-row'>
                 <TextInput
@@ -90,8 +130,8 @@ const Create = () => {
                     onChange={handleChange}
                 />
 
-                <Select id="category" required>
-                    <option>Select</option>
+                <Select id="category" required onChange={handleChange}>
+                    <option value={'uncategorized'}>Select</option>
                     <option value={'javascript'}>Javascript</option>
                     <option value={'react'}>React</option>
                     <option value={'php'}>Php</option>
@@ -124,14 +164,22 @@ const Create = () => {
             </div>
 
             <div>
-                <ReactQuill 
-                    theme='snow' 
+                <ReactQuill
+                    onChange={(value) => setFormData({...formData, content:value})} 
+                    theme='snow'
+                    id='content' 
                     placeholder='Write something...'
                     className='h-72 rounded-md mb-14'
                 />
 
 
             </div>
+
+
+            {uploadPostError  && uploadPostError.status && (
+                <Alert className='my-2 text-center w-full font-medium' color={'failure'}>{uploadPostError.message}</Alert>
+            )}
+
 
 
 

@@ -11,6 +11,7 @@ import Footer from "./components/Footer";
 import PrivateRoutes from "./components/PrivateRoutes";
 import Create from "./pages/posts/Create";
 import AdminPrivateRoutes from "./components/AdminPrivateRoutes";
+import Post from "./pages/posts/Post";
 
 export default function App() {
   return (
@@ -44,6 +45,12 @@ export default function App() {
             </Route>
 
 
+
+
+            <Route
+                path = "/posts/:slug"
+                element = {<Post/>}
+            />
 
 
             <Route
