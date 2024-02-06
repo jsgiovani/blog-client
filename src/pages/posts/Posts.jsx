@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axiosConnection from '../../config/axios'
 import { useSelector } from 'react-redux';
-import { Table } from 'flowbite-react';
+import { Button, Modal, Table } from 'flowbite-react';
 import { Link } from 'react-router-dom';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
 
 const Posts = () => {
@@ -14,6 +15,7 @@ const Posts = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showMore, setShowMore] = useState(true);
+  const [modal, setModal] = useState(false);
 
 //fetch first 9 posts
   const fetchPosts = async ()=>{
@@ -75,6 +77,33 @@ const Posts = () => {
   }
 
 
+  const deleteItem = async(itemId)=>{
+    setModal(false);
+    try {
+        setLoading(true);
+
+        const { data } = await axiosConnection.delete(`/api/posts/${itemId}/${currentUser._id}`, {
+            headers:{
+                'authorization': `Bearer ${currentUser.token}`,
+            },
+        });
+
+        if (!data.success) {
+            setError(data.message);
+            setLoading(false)
+        }
+
+        
+       fetchPosts();
+        
+    } catch (error) {
+        console.log(error);
+        // setError(error.response.data.message);
+        setLoading(false);
+    }
+  }
+
+
   return (
     <main className='max-w-7xl mx-auto p-5 table-auto overflow-x-scroll scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
         {currentUser.isAdmin && !loading && posts.length>0 && (
@@ -113,9 +142,33 @@ const Posts = () => {
                                     <Table.Cell className='font-semibold text-gray-900 dark:text-white'>{title}</Table.Cell>
                                     <Table.Cell>{category}</Table.Cell>
                                     <Table.Cell>
-                                        <button className='font-medium text-red-500 hover:underline cursor-pointer'>
-                                            Delete
-                                        </button>
+
+                                        <button className='font-medium text-red-500 hover:underline cursor-pointer' onClick={()=>setModal(true)}>Delete</button>
+                                        <Modal
+                                            show = {modal}
+                                            onClose={()=>setModal(false)}
+                                            popup
+                                            size={'md'}
+                                        >
+                                            <Modal.Header />
+                                            <Modal.Body>
+                                                <div className="text-center">
+                                                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                                    Are you sure you want to delete this post?
+                                                </h3>
+                                                <div className="flex justify-center gap-4">
+                                                    <Button color="failure" onClick={() => deleteItem(_id)}>
+                                                    {"Yes, I'm sure"}
+                                                    </Button>
+                                                    <Button color="gray" onClick={() => setModal(false)}>
+                                                    No, cancel
+                                                    </Button>
+                                                </div>
+                                                </div>
+                                            </Modal.Body>
+
+                                        </Modal>
 
                                     </Table.Cell>
 

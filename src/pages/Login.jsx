@@ -37,6 +37,8 @@ const Login = () => {
         
             const {data} = await axiosConnection.post('/api/auth/login', user);
 
+            console.log(data);
+
             if (data.success ===false) {
                 dispatch(loginFailure({status:true, message:error.response.data.message}))
             }
