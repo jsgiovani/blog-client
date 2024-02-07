@@ -80,7 +80,6 @@ const Posts = () => {
   const deleteItem = async(itemId)=>{
     setModal(false);
     try {
-        setLoading(true);
 
         const { data } = await axiosConnection.delete(`/api/posts/${itemId}/${currentUser._id}`, {
             headers:{
@@ -90,16 +89,14 @@ const Posts = () => {
 
         if (!data.success) {
             setError(data.message);
-            setLoading(false)
         }
 
-        
-       fetchPosts();
+
+        setPosts((posts) => posts.filter((post) => post._id !==itemId));
         
     } catch (error) {
         console.log(error);
-        // setError(error.response.data.message);
-        setLoading(false);
+        setError(error.response.data.message);
     }
   }
 
@@ -173,7 +170,7 @@ const Posts = () => {
                                     </Table.Cell>
 
                                     <Table.Cell className=''>
-                                        <Link to={`/posts/${slug}/update`}>Update</Link>
+                                        <Link to={`/posts/${_id}/update`}>Update</Link>
                                     </Table.Cell>
 
                                 </Table.Row>

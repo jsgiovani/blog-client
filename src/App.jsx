@@ -12,6 +12,7 @@ import PrivateRoutes from "./components/PrivateRoutes";
 import Create from "./pages/posts/Create";
 import AdminPrivateRoutes from "./components/AdminPrivateRoutes";
 import Post from "./pages/posts/Post";
+import PostUpdate from "./pages/posts/PostUpdate";
 
 export default function App() {
   return (
@@ -42,6 +43,12 @@ export default function App() {
                     path = "/posts/create"
                     element = {<Create/>}
                 />
+
+                <Route
+                    path = "/posts/:id/update"
+                    element = {<PostUpdate/>}
+                />
+
             </Route>
 
 
