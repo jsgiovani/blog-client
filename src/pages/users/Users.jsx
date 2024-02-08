@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import axiosConnection from '../../config/axios'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Modal, Table } from 'flowbite-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { FaCheck } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
+import { userLogout } from '../../features/user/userSlice';
 
 
 const Users = () => {
     const { currentUser } = useSelector((state) => state.user);
+
+    const navegate = useNavigate();
+
+    const distpatch = useDispatch();
+
 
 
 
@@ -104,6 +110,11 @@ const Users = () => {
         }
 
 
+        if (data.data._id ===currentUser._id) {
+            distpatch(userLogout());
+            navegate('/login');
+        }
+
         setUsers((users) => users.filter((user) => user._id !==itemId));
         
     } catch (error) {
@@ -134,6 +145,7 @@ const Users = () => {
 
                    <Table.Body className='divide-y'>
                         {users.map((user => {
+
                             const { _id, updatedAt, photo, isAdmin, username, email } = user;
                             return(
                                 <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800' key={_id}>
