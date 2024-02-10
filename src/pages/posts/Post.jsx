@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom"
 import axiosConnection from "../../config/axios";
 import { useEffect, useState } from "react";
 import { Button, Spinner } from "flowbite-react";
+import CallToAction from "../../components/CallToAction";
 
 const Post = () => {
 
@@ -75,6 +76,10 @@ const Post = () => {
         
         <div dangerouslySetInnerHTML={{ __html:post && post.content }} className="my-5 max-w-2xl mx-auto w-full post-content">
 
+        </div>
+
+        <div className="max-w-6xl mx-auto">
+            <CallToAction/>
         </div>
 
 
