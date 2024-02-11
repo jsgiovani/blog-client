@@ -3,6 +3,7 @@ import axiosConnection from "../../config/axios";
 import { useEffect, useState } from "react";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../../components/CallToAction";
+import Comment from "../../components/Comment";
 
 const Post = () => {
 
@@ -59,7 +60,7 @@ const Post = () => {
 
       <div className="flex justify-center my-5">
         <Link to={`/search?category=${post && post.category}`}>
-            <Button color="gray" size={'sm'} pill >{post && post.category}</Button>
+            <Button outline gradientDuoTone="purpleToBlue" size={'sm'} pill >{post && post.category}</Button>
         </Link>
       </div>
 
@@ -78,9 +79,16 @@ const Post = () => {
 
         </div>
 
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-3xl mx-auto">
             <CallToAction/>
         </div>
+
+    
+        <div className="max-w-3xl mx-auto">
+
+          <Comment postId = {post._id}/>
+        </div>
+
 
 
 
