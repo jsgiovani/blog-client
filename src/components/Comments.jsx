@@ -1,7 +1,7 @@
 import { Alert, Button, TextInput, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosConnection from "../config/axios";
 import Comment from "./Comment";
 
@@ -12,6 +12,7 @@ const Comments = ({postId}) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [comments, setComments] = useState([]);
+    const navegate = useNavigate();
 
 
 
@@ -76,11 +77,58 @@ const Comments = ({postId}) => {
     }
 
 
+
+
     useEffect(() => {
         if (postId) {
             fetchComments();
         }
     }, [postId]);
+
+
+
+    const likeUnlike = async (commentId) => {
+        
+
+        if (!currentUser ) {
+            return navegate('/login');
+        }
+
+
+        
+        // const isLiked = likes.some(like => like === currentUser._id);
+
+        try {
+            setLoading(true);
+            const {data} = await axiosConnection.post(`/api/comments/likes/${commentId}`, {}, {
+                headers:{
+                    'authorization': `Bearer ${currentUser.token}`,
+                },
+            });
+            
+            if (!data.success) {
+                setLoading(false);
+                setError(data.message);
+            }
+
+           
+            const comentsUpdated = comments.map(comment => {
+                if (comment._id === commentId) {
+                    comment.numberLikes = data.data.comment.numberLikes
+                }
+
+                return comment
+            });
+
+
+            setComments(comentsUpdated);
+            setLoading(false);
+
+        } catch (error) {
+            setError(error.request.data.message);
+        }
+    }
+
 
 
 
@@ -142,7 +190,7 @@ const Comments = ({postId}) => {
 
                 {comments.length>0 ? (
                    <div className="mt-4 space-y-8">
-                        {comments.map(comment => <Comment comment={comment} key={comment._id}/>)}
+                        {comments.map(comment => <Comment comment={comment} likeUnlike={likeUnlike} key={comment._id}/>)}
                    </div>
                 ):(<p>No comments yet</p>)}
 

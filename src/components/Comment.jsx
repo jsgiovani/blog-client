@@ -6,9 +6,9 @@ import axiosConnection from "../config/axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
 
-const Comment = ({comment}) => {
+const Comment = ({comment, likeUnlike}) => {
     const {currentUser} = useSelector(state => state.user);
-    const {content, userId, numberLikes, createdAt} = comment;
+    const {content, userId, numberLikes, createdAt, _id:commentId, likes} = comment;
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState({});
     const [error, setError] = useState(null);
@@ -32,6 +32,14 @@ const Comment = ({comment}) => {
         }
     }
 
+    
+
+
+    
+
+
+
+
 
     useEffect(() => {
         if (comment) {
@@ -40,7 +48,6 @@ const Comment = ({comment}) => {
     }, [comment])
 
 
-    console.log(user);
 
 
   return (
@@ -53,7 +60,10 @@ const Comment = ({comment}) => {
             </div>
             <p>{content}</p>
             <div className="flex items-center gap-1 border-t mt-2 pt-2">
-                <button className="text-md"><AiOutlineLike color="blue" /></button>
+                <button className="text-md" onClick={()=>likeUnlike(commentId)}>
+                    <AiOutlineLike color="blue" />
+                </button>
+
                 {numberLikes>0 && <span>{numberLikes} Like</span>}
 
                 {currentUser._id === userId && (
