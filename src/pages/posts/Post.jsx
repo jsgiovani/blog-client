@@ -3,7 +3,7 @@ import axiosConnection from "../../config/axios";
 import { useEffect, useState } from "react";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../../components/CallToAction";
-import Comment from "../../components/Comment";
+import Comment from "../../components/Comments";
 
 const Post = () => {
 
@@ -85,8 +85,8 @@ const Post = () => {
 
     
         <div className="max-w-3xl mx-auto">
-
           <Comment postId = {post._id}/>
+
         </div>
 
 
