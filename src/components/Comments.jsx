@@ -130,6 +130,46 @@ const Comments = ({postId}) => {
     }
 
 
+    const deleteComment = async (commentId) => {
+        
+
+        if (!currentUser ) {
+            return navegate('/login');
+        }
+        
+
+        try {
+            setLoading(true);
+
+
+            const {data} = await axiosConnection.delete(`/api/comments/${commentId}/${currentUser._id}`, {
+                headers:{
+                    'authorization': `Bearer ${currentUser.token}`,
+                },
+            });
+            
+            if (!data.success) {
+                setLoading(false);
+                setError(data.message);
+            }
+
+           
+    
+
+
+            setComments(comments.filter(comment => comment._id != commentId));
+            setLoading(false);
+
+        } catch (error) {
+            console.log(error);
+            console.log(error.response.data.message);
+            setError(error.response.data.message);
+        }
+    }
+
+
+
+
 
 
     
@@ -190,12 +230,14 @@ const Comments = ({postId}) => {
 
                 {comments.length>0 ? (
                    <div className="mt-4 space-y-8">
-                        {comments.map(comment => <Comment comment={comment} likeUnlike={likeUnlike} key={comment._id}/>)}
+                        {comments.map(comment => <Comment 
+                            comment={comment} 
+                            likeUnlike={likeUnlike}
+                            deleteComment = {deleteComment} 
+                            key={comment._id}/>
+                        )}
                    </div>
                 ):(<p>No comments yet</p>)}
-
-
-
 
 
             </div>

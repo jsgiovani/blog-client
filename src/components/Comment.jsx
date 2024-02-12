@@ -6,7 +6,7 @@ import axiosConnection from "../config/axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
 
-const Comment = ({comment, likeUnlike}) => {
+const Comment = ({comment, likeUnlike, deleteComment}) => {
     const {currentUser} = useSelector(state => state.user);
     const {content, userId, numberLikes, createdAt, _id:commentId, likes} = comment;
     const [loading, setLoading] = useState(false);
@@ -64,12 +64,12 @@ const Comment = ({comment, likeUnlike}) => {
                     <AiOutlineLike color="blue" />
                 </button>
 
-                {numberLikes>0 && <span>{numberLikes} Like</span>}
+                {numberLikes>0 && <span>{numberLikes } Like</span>}
 
-                {currentUser._id === userId && (
+                {(currentUser._id === userId) && (
                     <div className="flex gap-1 items-center">
-                        <button className="hover:text-blue-500">Edit</button>
-                        <button className="hover:text-red-500 hover:underline">Delete</button>
+                        <button  className="hover:text-blue-500">Edit</button>
+                        <button onClick={()=>deleteComment(commentId)} className="hover:text-red-500 hover:underline">Delete</button>
                     </div>
                 )}
 
