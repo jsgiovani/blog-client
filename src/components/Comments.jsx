@@ -166,7 +166,51 @@ const Comments = ({postId}) => {
             setError(error.response.data.message);
         }
     }
+    
 
+
+    const updateComment = async (commentId, content) => {
+        
+
+        if (!currentUser ) {
+            return navegate('/login');
+        }
+        
+
+        try {
+            setLoading(true);
+
+
+
+            const {data} = await axiosConnection.put(`/api/comments/${commentId}/${currentUser._id}`, content,  {
+                headers:{
+                    'authorization': `Bearer ${currentUser.token}`,
+                },
+            });
+            
+            if (!data.success) {
+                setLoading(false);
+                setError(data.message);
+            }
+
+           
+    
+
+
+            setComments(comments.map(comment => {
+                if (comment._id === commentId) {
+                    comment.content = content.content;
+                }
+                return comment;
+            }));
+
+            setLoading(false);
+
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    }
+    
 
 
 
@@ -233,7 +277,8 @@ const Comments = ({postId}) => {
                         {comments.map(comment => <Comment 
                             comment={comment} 
                             likeUnlike={likeUnlike}
-                            deleteComment = {deleteComment} 
+                            deleteComment = {deleteComment}
+                            updateComment  = {updateComment}
                             key={comment._id}/>
                         )}
                    </div>
