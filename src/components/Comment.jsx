@@ -5,7 +5,8 @@ import { AiOutlineLike } from "react-icons/ai";
 import axiosConnection from "../config/axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import { Button, Textarea } from "flowbite-react";
+import { Button, Modal, Textarea } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 const Comment = ({comment, likeUnlike, deleteComment, updateComment}) => {
     const {currentUser} = useSelector(state => state.user);
@@ -14,6 +15,7 @@ const Comment = ({comment, likeUnlike, deleteComment, updateComment}) => {
     const [user, setUser] = useState({});
     const [error, setError] = useState(null);
     const [editableComment, setEditableComment] = useState(content);
+    const [modal, setModal] = useState(false);
 
     const [showEditable, setShowEditable] = useState(false);
 
@@ -111,7 +113,32 @@ const Comment = ({comment, likeUnlike, deleteComment, updateComment}) => {
                         {(currentUser._id === userId || currentUser.isAdmin)  && (
                             <div className="flex gap-1 items-center">
                                 <button onClick={()=>setShowEditable(true)}  className="hover:text-blue-500">Edit</button>
-                                <button onClick={()=>deleteComment(commentId)} className="hover:text-red-500 hover:underline">Delete</button>
+                                <button className='font-medium hover:text-red-500 hover:underline cursor-pointer' onClick={()=>setModal(true)}>Delete</button>
+                                    <Modal
+                                        show = {modal}
+                                        onClose={()=>setModal(false)}
+                                        popup
+                                        size={'md'}
+                                    >
+                                        <Modal.Header />
+                                        <Modal.Body>
+                                            <div className="text-center">
+                                            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                                Are you sure you want to delete this comment?
+                                            </h3>
+                                            <div className="flex justify-center gap-4">
+                                                <Button color="failure" onClick={()=>deleteComment(commentId)}>
+                                                {"Yes, I'm sure"}
+                                                </Button>
+                                                <Button color="gray" onClick={() => setModal(false)}>
+                                                No, cancel
+                                                </Button>
+                                            </div>
+                                            </div>
+                                        </Modal.Body>
+
+                                    </Modal>
                             </div>
                         )}
                     </div>
