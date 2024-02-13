@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom";
 import axiosConnection from "../config/axios";
 import Comment from "./Comment";
+import Post from "./PostCard";
 
 const Comments = ({postId}) => {
 
@@ -12,6 +13,7 @@ const Comments = ({postId}) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [comments, setComments] = useState([]);
+    const [recentPosts, setRecentPosts] = useState([]);
     const navegate = useNavigate();
 
 
@@ -77,6 +79,26 @@ const Comments = ({postId}) => {
     }
 
 
+    const fetchRecentPosts = async()=>{
+        try {
+            setLoading(true);
+
+            const {data} = await axiosConnection.get(`/api/posts?limit=3`);
+            if (!data.success) {
+                setError(data.message);
+                setLoading(false);
+            }
+
+            setRecentPosts(data.data.posts);
+            setLoading(false);
+            
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    }
+
+
+
 
 
     useEffect(() => {
@@ -84,6 +106,11 @@ const Comments = ({postId}) => {
             fetchComments();
         }
     }, [postId]);
+
+
+    useEffect(() => {
+        fetchRecentPosts();
+    }, [])
 
 
 
@@ -210,11 +237,10 @@ const Comments = ({postId}) => {
             setError(error.response.data.message);
         }
     }
+
+
+
     
-
-
-
-
 
     
   return (
@@ -290,6 +316,20 @@ const Comments = ({postId}) => {
         ):(
             <p>no</p>
         )}
+
+
+        <div>
+            <h2 className="text-center text-xl font-semibold my-2 ">Recent Articles</h2>
+
+            <ul className="grid md:grid-cols-3 gap-4">
+                {!loading && recentPosts.length>0  && (
+                    recentPosts.map(post => <Post post = {post} key={post._id}/>)
+                )}
+            </ul>
+        </div>
+
+
+
 
     </section>
   )
