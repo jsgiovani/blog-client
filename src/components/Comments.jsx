@@ -74,6 +74,7 @@ const Comments = ({postId}) => {
             setLoading(false);
             
         } catch (error) {
+            console.log(comment);
             setError(error.response.data.message);
         }
     }
