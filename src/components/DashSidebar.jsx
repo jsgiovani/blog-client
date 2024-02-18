@@ -43,7 +43,7 @@ const DashSidebar = () => {
 
             <Link to="/dashboard?tab=dash">
                 <Sidebar.Item 
-                    active =  {tab ==='dash'}
+                    active =  {tab ==='dash' || !tab}
                     labelColor = {'dark'}
                     as='div' 
                     icon={MdDashboard}>
